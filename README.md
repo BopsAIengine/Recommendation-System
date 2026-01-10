@@ -1,21 +1,56 @@
-# Recommendation-System
+# Movie Recommendation System
 Link cuộc thi trên Kaggle: https://www.kaggle.com/competitions/movie-recomendation-fall-2020/overview
 
-1.    SimGCL : 1.27157
-<img width="1175" height="74" alt="image" src="https://github.com/user-attachments/assets/534228f1-863a-43f3-be4d-18c1d77d132a" />
 
+# Cấu trúc Project
+```
+├───main.ipynb
+├───README.md
+├───data\
+│   ├───test.txt
+│   └───train.txt
+├───models\
+│   ├───attention_net.py
+│   ├───dmf.py
+│   ├───ensemble.py
+│   ├───gmf.py
+│   ├───lightgcn.py
+│   ├───lightgcnpp.py
+│   ├───ncf.py
+│   ├───neumf.py
+│   └───simgcl.py
+├───pipeline\
+│   ├───eval_model.py
+│   ├───make_model.py
+│   ├───pipeline.py
+│   ├───preprocessing.py
+│   └───train.py
+└───util\
+    ├───common.py
+    └───submission_gen.py
+```
 
-2.    XSimGCL:  1.12577
-<img width="1188" height="91" alt="image" src="https://github.com/user-attachments/assets/1823c769-5202-425f-ae90-5b79575d0cc2" />
+## Mô tả cấu trúc
+*   `data`: Chứa dữ liệu training và testing từ cuộc thi.
+*   `models`: Chứa các file định nghĩa model.
+*   `pipeline`: Chứa các file thực thi pipeline cho các model, bao gồm preprocessing -> training -> evaluation.
+*   `util`: Chứa các hàm hỗ trợ chung và hàm generate ra submission file cho cuộc thi.
 
+# Chạy mô hình
+```
+model_config = {...}
+model = pipeline(model_name, model_config, preprocessing('./data/train.txt'))
+```
 
-3.LightGCN: 1.26088
-<img width="1183" height="79" alt="image" src="https://github.com/user-attachments/assets/9eaf82c9-4350-45ca-8851-406037dd0247" />
-
-
-4.Transformer: 1.03150
-<img width="1191" height="79" alt="image" src="https://github.com/user-attachments/assets/e1a4aa58-50d2-4654-988c-49e9aad4d7ac" />
-
-
-5.NeuMF: 0.93688
-<img width="1205" height="90" alt="image" src="https://github.com/user-attachments/assets/3fc597ee-8b29-494a-bd02-4ddac0534191" />
+## Ví dụ: GMF
+```
+gmf_config = {
+    'epochs': 7,
+    'batch_size': 512,
+    'learning_rate': 0.00065,
+    'weight_decay': 1e-5,
+    'embedding_dim': 64,
+    'device': 'cpu'
+}
+gmf = pipeline('gmf', gmf_config, preprocessing('./data/train.txt'))
+```

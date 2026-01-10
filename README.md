@@ -1,6 +1,17 @@
 # Movie Recommendation System
 Link cuộc thi trên Kaggle: https://www.kaggle.com/competitions/movie-recomendation-fall-2020/overview
 
+Mô tả dữ liệu:
+*   `UserId`: Định danh người dùng.
+*   `MovieId`: Định danh bộ phim.
+*   `Rating`: Đánh giá sao của người dùng (1-5).
+
+# Mô hình tốt nhất: Ensemble
+GMF + LightGCN + Attention-Based NeuMF
+
+Private Score: **0.92336**
+
+Public Score: **0.90472**
 
 # Cấu trúc Project
 ```

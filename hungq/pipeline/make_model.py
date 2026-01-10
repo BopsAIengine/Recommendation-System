@@ -1,4 +1,4 @@
-from hungq.models import GMF, AttentionNet, BiasedMF, NeuMF, LightGCN, LightGCNPP, SimGCL, NCF
+from hungq.models import GMF, AttentionNet, NeuMF, LightGCN, LightGCNPP, SimGCL, NCF, DMF, Ensemble
 from hungq.util import build_edge_index
 
 def make_model(model_type, config, data_bundle, n_users, n_movies, pretrained_models=None):
@@ -19,12 +19,15 @@ def make_model(model_type, config, data_bundle, n_users, n_movies, pretrained_mo
             dropout=config['dropout'],
             global_mean=global_mean
         )
-
-    elif model_type == 'biased_mf':
-        model = BiasedMF(
+        
+    elif model_type == 'dmf':
+        model = DMF(
             n_users=n_users,
-            n_movies=n_movies,
+            n_items=n_movies,
             embedding_dim=config['embedding_dim'],
+            user_hidden_dims=config.get('user_hidden_dims', [128, 64]),
+            item_hidden_dims=config.get('item_hidden_dims', [128, 64]),
+            dropout=config.get('dropout', 0.1),
             global_mean=global_mean
         )
         
@@ -91,6 +94,19 @@ def make_model(model_type, config, data_bundle, n_users, n_movies, pretrained_mo
             eps=config.get('eps', 0.1),
             temperature=config.get('temperature', 0.2),
             lambda_cl=config.get('lambda_cl', 0.1)
+        )
+
+    elif model_type == 'ensemble':
+        if not pretrained_models:
+            raise ValueError("Ensemble requires pretrained_models")
+    
+        model_list = []
+        for name in config['ensemble_models']:
+            model_list.append(pretrained_models[name])
+    
+        model = Ensemble(
+            models=model_list,
+            learn_weights=config.get('learn_weights', True)
         )
 
     else:
